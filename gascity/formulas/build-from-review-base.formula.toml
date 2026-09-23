@@ -116,9 +116,16 @@ metadata = { "gc.run_target" = "gc.run-operator" }
 description_file = "../assets/workflows/build-from-review-base/repair-review.md"
 
 [[steps]]
+id = "re-review"
+title = "Re-grade the repaired head"
+needs = ["repair-review"]
+metadata = { "gc.run_target" = "gc.implementation-reviewer" }
+description_file = "../assets/workflows/build-from-review-base/re-review.md"
+
+[[steps]]
 id = "finalize"
 title = "Finalize continuation result"
-needs = ["repair-review"]
+needs = ["repair-review", "re-review"]
 metadata = { "gc.run_target" = "gc.run-operator", "gc.build.artifact_schema" = "gc.build.final-report.v1", "gc.build.artifact_path_keys" = "gc.build.final_report_path" }
 description_file = "../assets/workflows/build-from-review-base/finalize.md"
 
@@ -133,6 +140,6 @@ timeout = "5m"
 [[steps]]
 id = "publish"
 title = "Optionally publish continuation result"
-needs = ["finalize"]
+needs = ["finalize", "re-review"]
 metadata = { "gc.run_target" = "gc.publisher" }
 description_file = "../assets/workflows/build-from-review-base/publish.md"
